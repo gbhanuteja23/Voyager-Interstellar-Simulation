@@ -1,8 +1,70 @@
-# Python bytecode & caches
+# ==============================================================================
+# Voyager Interstellar Journey Simulation — Git Ignore Rules
+# ==============================================================================
+
+# Python bytecode, caches & packaging
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Temporary debug logs
-last_error.log
+# Virtual environments & test/lint caches
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# NVIDIA Isaac Sim / Omniverse Kit runtime logs, shader caches & crash dumps
 *.dmp
+*.mdmp
+*.kit.log
+kit_*.log
+last_error.log
+shadercache/
+ov_cache/
+.nvidia-omniverse/
+*.usd.tmp
+*.usda.tmp
+*.usdc.tmp
+
+# Local environment overrides
+.env
+.env.*
+!.env.example
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/

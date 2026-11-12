@@ -790,106 +790,104 @@ def build_voyager_articulated_usd(output_usd: Path, converted_nasa_usd: Optional
         UsdShade.MaterialBindingAPI.Apply(strut.GetPrim()).Bind(mat_metal)
 
     # 3. Articulated 13-meter Magnetometer Boom (pivots at (-0.85, 0, -0.35), extends along -X when deployed)
+    # Slender aerospace fiberglass Astromast lattice boom (no thick pipe!)
     mag_pivot = UsdGeom.Xform.Define(stage, "/Voyager/MagnetometerBoomPivot")
     mag_pivot.AddTranslateOp().Set(Gf.Vec3d(-0.85, 0.0, -0.35))
     mag_pivot.AddRotateYOp(opSuffix="deploy").Set(0.0)
 
     mag_mast = UsdGeom.Cylinder.Define(stage, "/Voyager/MagnetometerBoomPivot/Astromast")
-    mag_mast.CreateRadiusAttr(0.055)
-    mag_mast.CreateHeightAttr(8.8)  # Compact true-proportion visual boom
+    mag_mast.CreateRadiusAttr(0.020)
+    mag_mast.CreateHeightAttr(5.4)
     mag_mast.CreateAxisAttr("X")
-    mag_mast.AddTranslateOp().Set(Gf.Vec3d(-4.4, 0.0, 0.0))
+    mag_mast.AddTranslateOp().Set(Gf.Vec3d(-2.7, 0.0, 0.0))
     UsdShade.MaterialBindingAPI.Apply(mag_mast.GetPrim()).Bind(mat_gold)
 
+    # Lattice spacer rings along Astromast for realistic triangular truss silhouette
+    for b_idx in range(8):
+        bx = -0.55 - b_idx * 0.64
+        b_ring = UsdGeom.Cylinder.Define(stage, f"/Voyager/MagnetometerBoomPivot/TrussRing_{b_idx}")
+        b_ring.CreateRadiusAttr(0.065)
+        b_ring.CreateHeightAttr(0.014)
+        b_ring.CreateAxisAttr("X")
+        b_ring.AddTranslateOp().Set(Gf.Vec3d(bx, 0.0, 0.0))
+        UsdShade.MaterialBindingAPI.Apply(b_ring.GetPrim()).Bind(mat_metal)
+
+    mag_mid = UsdGeom.Cube.Define(stage, "/Voyager/MagnetometerBoomPivot/InboardFluxgate")
+    mag_mid.CreateSizeAttr(0.11)
+    mag_mid.AddTranslateOp().Set(Gf.Vec3d(-3.1, 0.0, 0.06))
+    UsdShade.MaterialBindingAPI.Apply(mag_mid.GetPrim()).Bind(mat_gold)
+
     mag_tip = UsdGeom.Cube.Define(stage, "/Voyager/MagnetometerBoomPivot/FluxgateSensor")
-    mag_tip.CreateSizeAttr(0.20)
-    mag_tip.AddTranslateOp().Set(Gf.Vec3d(-8.85, 0.0, 0.0))
+    mag_tip.CreateSizeAttr(0.14)
+    mag_tip.AddTranslateOp().Set(Gf.Vec3d(-5.45, 0.0, 0.0))
     UsdShade.MaterialBindingAPI.Apply(mag_tip.GetPrim()).Bind(mat_gold)
 
-    # 4. Articulated MHW-RTG Boom (pivots at (+0.85, -0.25, -0.38), extends along +X/-Y)
+    # 4. Articulated MHW-RTG Boom (pivots at (+0.85, -0.20, -0.38), extends along +X)
     rtg_pivot = UsdGeom.Xform.Define(stage, "/Voyager/RTGBoomPivot")
     rtg_pivot.AddTranslateOp().Set(Gf.Vec3d(0.85, -0.20, -0.38))
     rtg_pivot.AddRotateYOp(opSuffix="deploy").Set(0.0)
 
     rtg_strut = UsdGeom.Cylinder.Define(stage, "/Voyager/RTGBoomPivot/OutriggerStrut")
-    rtg_strut.CreateRadiusAttr(0.06)
-    rtg_strut.CreateHeightAttr(2.4)
+    rtg_strut.CreateRadiusAttr(0.038)
+    rtg_strut.CreateHeightAttr(2.1)
     rtg_strut.CreateAxisAttr("X")
-    rtg_strut.AddTranslateOp().Set(Gf.Vec3d(1.2, 0.0, 0.0))
+    rtg_strut.AddTranslateOp().Set(Gf.Vec3d(1.05, 0.0, 0.0))
     UsdShade.MaterialBindingAPI.Apply(rtg_strut.GetPrim()).Bind(mat_metal)
 
     for r_i in range(3):
         rtg_can = UsdGeom.Cylinder.Define(stage, f"/Voyager/RTGBoomPivot/MHW_RTG_{r_i}")
-        rtg_can.CreateRadiusAttr(0.20)
-        rtg_can.CreateHeightAttr(0.52)
+        rtg_can.CreateRadiusAttr(0.17)
+        rtg_can.CreateHeightAttr(0.46)
         rtg_can.CreateAxisAttr("X")
-        rtg_can.AddTranslateOp().Set(Gf.Vec3d(2.55 + r_i * 0.58, 0.0, 0.0))
+        rtg_can.AddTranslateOp().Set(Gf.Vec3d(2.25 + r_i * 0.52, 0.0, 0.0))
         UsdShade.MaterialBindingAPI.Apply(rtg_can.GetPrim()).Bind(mat_dark)
 
-    # 5. Articulated Science Scan Platform (extends along +Y/+X carrying ISS Cameras, IRIS, UVS)
+    # 5. Articulated Science Scan Platform (extends along +Y carrying ISS Cameras, IRIS, UVS, LECP)
     scan_pivot = UsdGeom.Xform.Define(stage, "/Voyager/ScanPlatformPivot")
     scan_pivot.AddTranslateOp().Set(Gf.Vec3d(0.35, 0.85, -0.32))
     scan_pivot.AddRotateXOp(opSuffix="deploy").Set(0.0)
 
     scan_boom = UsdGeom.Cylinder.Define(stage, "/Voyager/ScanPlatformPivot/ScanBoom")
-    scan_boom.CreateRadiusAttr(0.055)
-    scan_boom.CreateHeightAttr(2.1)
+    scan_boom.CreateRadiusAttr(0.036)
+    scan_boom.CreateHeightAttr(1.85)
     scan_boom.CreateAxisAttr("Y")
-    scan_boom.AddTranslateOp().Set(Gf.Vec3d(0.0, 1.05, 0.0))
+    scan_boom.AddTranslateOp().Set(Gf.Vec3d(0.0, 0.92, 0.0))
     UsdShade.MaterialBindingAPI.Apply(scan_boom.GetPrim()).Bind(mat_metal)
 
     head = UsdGeom.Cube.Define(stage, "/Voyager/ScanPlatformPivot/InstrumentHead")
-    head.CreateSizeAttr(0.46)
-    head.AddTranslateOp().Set(Gf.Vec3d(0.0, 2.25, 0.0))
+    head.CreateSizeAttr(0.38)
+    head.AddTranslateOp().Set(Gf.Vec3d(0.0, 1.98, 0.0))
     UsdShade.MaterialBindingAPI.Apply(head.GetPrim()).Bind(mat_dark)
 
     nac = UsdGeom.Cylinder.Define(stage, "/Voyager/ScanPlatformPivot/ISS_NarrowAngleCam")
-    nac.CreateRadiusAttr(0.11)
-    nac.CreateHeightAttr(0.48)
+    nac.CreateRadiusAttr(0.095)
+    nac.CreateHeightAttr(0.42)
     nac.CreateAxisAttr("Y")
-    nac.AddTranslateOp().Set(Gf.Vec3d(0.16, 2.52, 0.12))
+    nac.AddTranslateOp().Set(Gf.Vec3d(0.14, 2.22, 0.10))
     UsdShade.MaterialBindingAPI.Apply(nac.GetPrim()).Bind(mat_metal)
 
-    # 6. Dual 10m PRA / PWS Radio Astronomy Whip Antennas
+    iris = UsdGeom.Cylinder.Define(stage, "/Voyager/ScanPlatformPivot/IRIS_Radiometer")
+    iris.CreateRadiusAttr(0.13)
+    iris.CreateHeightAttr(0.26)
+    iris.CreateAxisAttr("Y")
+    iris.AddTranslateOp().Set(Gf.Vec3d(-0.15, 2.15, -0.06))
+    UsdShade.MaterialBindingAPI.Apply(iris.GetPrim()).Bind(mat_gold)
+
+    # 6. Dual 10m PRA / PWS Radio Astronomy Whip Antennas (razor-thin aerospace whips)
     for w_idx, yaw in enumerate((-38.0, 38.0)):
         whip = UsdGeom.Cylinder.Define(stage, f"/Voyager/PRA_WhipAntenna_{w_idx}")
-        whip.CreateRadiusAttr(0.015)
-        whip.CreateHeightAttr(6.5)
+        whip.CreateRadiusAttr(0.008)
+        whip.CreateHeightAttr(4.8)
         whip.CreateAxisAttr("Y")
-        whip.AddTranslateOp().Set(Gf.Vec3d(math.sin(math.radians(yaw)) * 3.25, -math.cos(math.radians(yaw)) * 3.25, -0.52))
+        whip.AddTranslateOp().Set(Gf.Vec3d(math.sin(math.radians(yaw)) * 2.4, -math.cos(math.radians(yaw)) * 2.4, -0.52))
         whip.AddRotateZOp().Set(float(yaw))
         UsdShade.MaterialBindingAPI.Apply(whip.GetPrim()).Bind(mat_metal)
 
-    # Reference converted public-domain NASA Voyager 3D mesh if all internal asset paths resolve cleanly
+    # Record converted public-domain NASA Voyager USD provenance without composing static non-folding
+    # booms on top of our articulated unfolding booms (prevents double-boom overlap during launch!).
     if converted_nasa_usd and converted_nasa_usd.exists():
         root.GetPrim().SetCustomDataByKey("nasa_converted_usd", converted_nasa_usd.name)
-        nasa_stage = Usd.Stage.Open(str(converted_nasa_usd))
-        if nasa_stage:
-            broken_assets = 0
-            base_dir = converted_nasa_usd.parent
-            for p in nasa_stage.Traverse():
-                for attr in p.GetAttributes():
-                    val = attr.Get()
-                    if isinstance(val, Sdf.AssetPath) and val.path:
-                        raw_p = val.resolvedPath or val.path
-                        if not raw_p.endswith(".mdl") and not Path(raw_p).exists() and not (base_dir / val.path).exists():
-                            broken_assets += 1
-            if broken_assets == 0:
-                bbox_cache = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
-                bound = bbox_cache.ComputeWorldBound(nasa_stage.GetPseudoRoot()).ComputeAlignedBox()
-                size_vec = bound.GetMax() - bound.GetMin()
-                max_dim = max(float(size_vec[0]), float(size_vec[1]), float(size_vec[2]), 1e-4)
-                center_vec = (bound.GetMax() + bound.GetMin()) * 0.5
-                # Normalize NASA mesh to ~2.8m core span so it nests cleanly with our articulated booms & dish
-                norm_s = 2.8 / max_dim
-                nasa_ref_xf = UsdGeom.Xform.Define(stage, "/Voyager/NASA_ReferenceMesh")
-                nasa_ref_xf.AddScaleOp().Set(Gf.Vec3f(norm_s, norm_s, norm_s))
-                nasa_ref_xf.AddTranslateOp().Set(Gf.Vec3d(-float(center_vec[0]), -float(center_vec[1]), -float(center_vec[2])))
-                def_prim = nasa_stage.GetDefaultPrim()
-                rel_asset = f"./{converted_nasa_usd.name}"
-                if def_prim and def_prim.IsValid():
-                    nasa_ref_xf.GetPrim().GetReferences().AddReference(rel_asset)
-                print(f"[AssetBuilder] Composed NASA 3D Voyager mesh ({rel_asset}, scale={norm_s:.4f}) into /Voyager/NASA_ReferenceMesh.")
+        print(f"[AssetBuilder] Linked NASA converted Voyager provenance ({converted_nasa_usd.name}) on /Voyager.")
 
     stage.GetRootLayer().Save()
     print(f"[AssetBuilder] Saved articulated Voyager OpenUSD: {output_usd.name}")

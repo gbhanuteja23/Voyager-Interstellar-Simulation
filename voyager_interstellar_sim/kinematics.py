@@ -15,6 +15,7 @@ from voyager_interstellar_sim.config import (
     PLANETS,
     PLANET_BY_NAME,
     PlanetSpec,
+    ROCKET_VISUAL_SCALE,
     SPEED_OF_LIGHT_KM_S,
     au_to_sim_radius,
     au_vec_to_sim,
@@ -137,8 +138,18 @@ def _spherical_au_vec(r_au: float, lon_deg: float, lat_deg: float) -> Tuple[floa
     )
 
 
-def _flyby_point_sim(planet_name: str, year: float, radial_out: float, z_offset: float) -> Tuple[np.ndarray, float]:
-    """Place spacecraft flyby knot right outside a planet's apparent visual sphere for dramatic flybys."""
+def _earth_sunlit_limb_dir(earth_sim: np.ndarray) -> np.ndarray:
+    """Unit direction on Earth's sunlit daytime hemisphere (~50 deg from subsolar point, northern mid-latitude)."""
+    rad = earth_sim / max(np.linalg.norm(earth_sim), 1e-6)
+    tang = np.array([-rad[1], rad[0], 0.0], dtype=np.float64)
+    tang /= max(np.linalg.norm(tang), 1e-6)
+    # Faces Sun (-rad) + prograde (+tang) + northern Cape Canaveral latitude (+0.42 Z) so Earth gleams below!
+    limb = -0.58 * rad + 0.68 * tang + np.array([0.0, 0.0, 0.45], dtype=np.float64)
+    return limb / max(np.linalg.norm(limb), 1e-6)
+
+
+def _flyby_point_sim(planet_name: str, year: float, clearance_scale: float, z_offset: float) -> Tuple[np.ndarray, float]:
+    """Place spacecraft flyby knot on the sunlit trailing slingshot flank outside a planet's visual sphere/rings."""
     spec = PLANET_BY_NAME[planet_name]
     p_au = planet_position_au(spec, year)
     p_sim = np.array(au_vec_to_sim(p_au), dtype=np.float64)
@@ -148,18 +159,21 @@ def _flyby_point_sim(planet_name: str, year: float, radial_out: float, z_offset:
     tn = np.linalg.norm(tang_dir)
     if tn > 1e-6:
         tang_dir /= tn
-    clearance = spec.visual_radius_m * 1.68
-    offset = rad_dir * (clearance * radial_out) + tang_dir * (clearance * 0.65) + np.array([0.0, 0.0, clearance * z_offset])
-    return p_sim + offset, spec.a_au
+    # Trailing sunlit gravity-assist flank (-rad_dir faces Sun, -tang_dir is trailing slingshot side!)
+    flank = -0.46 * rad_dir - 0.88 * tang_dir + np.array([0.0, 0.0, z_offset], dtype=np.float64)
+    flank /= max(np.linalg.norm(flank), 1e-6)
+    base_mult = 2.58 if spec.has_rings else 1.58
+    clearance = spec.visual_radius_m * base_mult * clearance_scale
+    return p_sim + flank * clearance, spec.a_au
 
 
 def _build_voyager1_knots() -> List[TrajectoryKnot]:
     earth_1977 = planet_position_sim(PLANET_BY_NAME["Earth"], 1977.685)
-    e_rad = earth_1977 / max(np.linalg.norm(earth_1977), 1e-6)
-    launch_orbit_pos = earth_1977 + e_rad * (PLANET_BY_NAME["Earth"].visual_radius_m * 1.48)
+    limb_dir = _earth_sunlit_limb_dir(earth_1977)
+    launch_orbit_pos = earth_1977 + limb_dir * (PLANET_BY_NAME["Earth"].visual_radius_m * 1.32)
 
-    jup_pos, jup_au = _flyby_point_sim("Jupiter", 1979.180, radial_out=0.85, z_offset=0.08)
-    sat_pos, sat_au = _flyby_point_sim("Saturn", 1980.860, radial_out=1.15, z_offset=-0.42)
+    jup_pos, jup_au = _flyby_point_sim("Jupiter", 1979.180, clearance_scale=1.02, z_offset=0.22)
+    sat_pos, sat_au = _flyby_point_sim("Saturn", 1980.860, clearance_scale=1.05, z_offset=-0.68)
 
     # Post-Saturn northward ecliptic exit (~+34.9 deg ecliptic latitude, ~254 deg ecliptic lon -> toward Heliosphere Nose!)
     # Calibrate exact Heliopause crossing radius along V1's asymptotic direction so V1 crosses the Heliopause shell right at 2012.65!
@@ -187,13 +201,13 @@ def _build_voyager1_knots() -> List[TrajectoryKnot]:
 
 def _build_voyager2_knots() -> List[TrajectoryKnot]:
     earth_1977 = planet_position_sim(PLANET_BY_NAME["Earth"], 1977.685)
-    e_rad = earth_1977 / max(np.linalg.norm(earth_1977), 1e-6)
-    launch_orbit_pos = earth_1977 + e_rad * (PLANET_BY_NAME["Earth"].visual_radius_m * 1.48) + np.array([0.0, 0.8, -0.4])
+    limb_dir = _earth_sunlit_limb_dir(earth_1977)
+    launch_orbit_pos = earth_1977 + limb_dir * (PLANET_BY_NAME["Earth"].visual_radius_m * 1.32) + np.array([0.0, 0.9, -0.5])
 
-    jup_pos, jup_au = _flyby_point_sim("Jupiter", 1979.520, radial_out=0.95, z_offset=-0.06)
-    sat_pos, sat_au = _flyby_point_sim("Saturn", 1981.650, radial_out=1.22, z_offset=0.12)
-    ura_pos, ura_au = _flyby_point_sim("Uranus", 1986.070, radial_out=0.92, z_offset=0.15)
-    nep_pos, nep_au = _flyby_point_sim("Neptune", 1989.650, radial_out=0.88, z_offset=0.52)
+    jup_pos, jup_au = _flyby_point_sim("Jupiter", 1979.520, clearance_scale=1.05, z_offset=-0.24)
+    sat_pos, sat_au = _flyby_point_sim("Saturn", 1981.650, clearance_scale=1.18, z_offset=0.85)
+    ura_pos, ura_au = _flyby_point_sim("Uranus", 1986.070, clearance_scale=1.25, z_offset=0.85)
+    nep_pos, nep_au = _flyby_point_sim("Neptune", 1989.650, clearance_scale=1.20, z_offset=0.85)
 
     # Post-Neptune southward ecliptic exit (~-32.2 to -48 deg lat, ~289 deg ecliptic lon)
     v2_dir_hp = np.array(_spherical_au_vec(1.0, 288.5, -32.2), dtype=np.float64)
@@ -293,6 +307,41 @@ def get_heliopause_crossing_sim(spacecraft_id: int = 1) -> Tuple[float, float, f
     return (float(pos[0]), float(pos[1]), float(pos[2]))
 
 
+def get_trajectory_au_milestones(spacecraft_id: int = 1) -> List[Tuple[str, float, Tuple[float, float, float]]]:
+    """Return key `(label, r_au, pos_sim)` milestones along Voyager's trajectory for 3D & viewport HUD markers."""
+    knots = VOYAGER1_KNOTS if spacecraft_id == 1 else VOYAGER2_KNOTS
+    if spacecraft_id == 1:
+        specs = [
+            ("Earth Launch", 1977.685),
+            ("Asteroid Belt", 1978.350),
+            ("Jupiter Flyby", 1979.180),
+            ("Saturn & Titan", 1980.860),
+            ("Kuiper Belt", 1989.650),
+            ("Term. Shock", 2004.950),
+            ("Heliopause", 2012.650),
+            ("2026 Position", 2026.865),
+            ("Oort Cloud", 2550.000),
+        ]
+    else:
+        specs = [
+            ("Earth Launch", 1977.685),
+            ("Asteroid Belt", 1978.550),
+            ("Jupiter Flyby", 1979.520),
+            ("Saturn Flyby", 1981.650),
+            ("Uranus Flyby", 1986.070),
+            ("Neptune Flyby", 1989.650),
+            ("Term. Shock", 2007.660),
+            ("Heliopause", 2018.850),
+            ("2026 Position", 2026.865),
+            ("Oort Cloud", 2550.000),
+        ]
+    out: List[Tuple[str, float, Tuple[float, float, float]]] = []
+    for label, yr in specs:
+        pos, _, r_au, _ = _catmull_rom_eval(knots, yr)
+        out.append((label, float(r_au), (float(pos[0]), float(pos[1]), float(pos[2]))))
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Quaternion Attitude Helpers (+Z Dish Boresight -> Target)
 # ---------------------------------------------------------------------------
@@ -374,6 +423,7 @@ class SpacecraftState:
     round_trip_light_time_str: str
     plasma_regime: str
     plasma_color_hex: int          # ABGR color for omni.ui
+    location_label: str            # Human-readable space region / planetary encounter label
 
 
 @dataclass
@@ -420,6 +470,77 @@ def _classify_plasma_regime(r_au: float, pos_sim: np.ndarray) -> Tuple[str, int]
     return ("Oort Cloud Cometary Halo (Deep Interstellar)", 0xFFE8D080)
 
 
+def _describe_space_location(
+    r_au: float,
+    year: float,
+    sc_id: int,
+    scrub_s: float,
+    pos_sim: np.ndarray,
+    planet_pos_sim: Dict[str, Tuple[float, float, float]],
+) -> str:
+    """Identify the exact astronomical region or planetary system Voyager currently occupies."""
+    if scrub_s <= 0.14:
+        u_l = scrub_s / 0.14
+        if u_l < 0.30:
+            return "Earth Launch Ascent -- Titan IIIE SRB Climb"
+        if u_l < 0.52:
+            return "Upper Atmosphere / LEO -- Fairing & Core Separation"
+        if u_l < 0.76:
+            return "Low Earth Orbit -- Centaur Trans-Planetary Injection"
+        return "Cis-Lunar Departure -- Voyager Separation & Boom Unfolding"
+
+    # Check proximity to planets for gravity-assist / flyby encounters
+    for p_name, label in (
+        ("Earth", "Earth Departure Neighborhood (1.00 AU)"),
+        ("Jupiter", "Jovian System -- Jupiter Gravity Assist"),
+        ("Saturn", "Kronian System -- Saturn Rings & Titan Flyby" if sc_id == 1 else "Kronian System -- Saturn Gravity Assist"),
+        ("Uranus", "Uranian System -- Uranus Close Flyby"),
+        ("Neptune", "Neptunian System -- Neptune & Triton Polar Skim"),
+    ):
+        p_vec = np.array(planet_pos_sim[p_name], dtype=np.float64)
+        vis_r = PLANET_BY_NAME[p_name].visual_radius_m
+        thresh = vis_r * (3.6 if p_name == "Saturn" else 2.8)
+        if float(np.linalg.norm(pos_sim - p_vec)) <= thresh:
+            return label
+
+    d_unit = pos_sim / max(np.linalg.norm(pos_sim), 1e-6)
+    ts_au = heliosphere_boundary_radius_au(d_unit, nose_au=89.8, tail_stretch=2.35)
+    hp_au = heliosphere_boundary_radius_au(d_unit, nose_au=116.8, tail_stretch=2.55)
+    hemi = "North Ecliptic (+35 deg)" if sc_id == 1 else "South Ecliptic (-44 deg)"
+
+    if r_au < 1.42:
+        return "Inner Solar System (Earth -> Mars Transfer)"
+    if r_au < 1.95:
+        return "Mars Orbit Crossing Region (~1.52 AU)"
+    if r_au < 3.45:
+        return "Main Asteroid Belt Transit (2.2 - 3.3 AU)"
+    if r_au < 5.65:
+        return "Jovian Approach / Outer Asteroid Zone"
+    if r_au < 10.3:
+        return "Inter-Giant Space (Jupiter -> Saturn Cruise)"
+    if r_au < 20.4:
+        return "Outer Giant Planet Zone (Saturn -> Uranus)" if sc_id == 2 else f"High-Latitude Outer Solar System ({hemi})"
+    if r_au < 31.8:
+        return "Trans-Uranian Cruise (Uranus -> Neptune)" if sc_id == 2 else f"Deep Planetary Ecliptic Exit ({hemi})"
+    if r_au < 53.5:
+        return f"Kuiper Belt Region (32 - 52 AU | {hemi})"
+    if r_au < ts_au - 2.5:
+        return f"Outer Heliosphere -- Supersonic Solar Wind ({hemi})"
+    if r_au <= ts_au + 2.5:
+        return f"Termination Shock Crossing (~{ts_au:.0f} AU)"
+    if r_au < hp_au - 1.5:
+        return f"Subsonic Heliosheath ({ts_au:.0f} - {hp_au:.0f} AU)"
+    if r_au <= hp_au + 1.5:
+        return f"Heliopause Boundary Crossing (~{hp_au:.1f} AU)"
+    if abs(year - 2026.865) < 1.6:
+        return f"Present-Day Interstellar Space -- VLISM ({hemi})"
+    if r_au < 980.0:
+        return f"Interstellar Space -- Very Local ISM ({hemi})"
+    if r_au < 3500.0:
+        return "Inner Oort Cloud Cometary Halo (1,000 - 3,500 AU)"
+    return "Outer Oort Cloud Spherical Shell (Deep Interstellar)"
+
+
 def evaluate_simulation_frame(scrub_s: float, active_spacecraft: int = 1) -> SimulationFrameState:
     """Master kinematic evaluator for any timeline scrubber position `scrub_s` in [0.0, 1.0]."""
     s = max(0.0, min(1.0, float(scrub_s)))
@@ -434,31 +555,39 @@ def evaluate_simulation_frame(scrub_s: float, active_spacecraft: int = 1) -> Sim
 
     earth_np = np.array(planet_pos["Earth"], dtype=np.float64)
     earth_rad = earth_np / max(np.linalg.norm(earth_np), 1e-6)
-    earth_tan = np.array([-earth_rad[1], earth_rad[0], 0.18], dtype=np.float64)
+    earth_tan = np.array([-earth_rad[1], earth_rad[0], 0.16], dtype=np.float64)
     earth_tan /= max(np.linalg.norm(earth_tan), 1e-6)
+    limb_dir = _earth_sunlit_limb_dir(earth_np)
 
-    # Titan local orbit around Saturn (r = 17.5 m outside F-ring, inclined 0.3 deg to ring plane)
+    # Titan local orbit around Saturn (r = 82.0 m cleanly outside the 70.2 m F-ring)
+    sat_r = PLANET_BY_NAME["Saturn"].visual_radius_m
+    titan_orb_r = sat_r * 2.74
     titan_ang = 2.0 * math.pi * ((year - 1977.68) * 365.25 / 15.945) * 0.08 + 1.15
-    titan_local = (17.5 * math.cos(titan_ang), 17.5 * math.sin(titan_ang), 0.45 * math.sin(titan_ang))
+    titan_local = (
+        titan_orb_r * math.cos(titan_ang),
+        titan_orb_r * math.sin(titan_ang),
+        1.2 * math.sin(titan_ang),
+    )
 
     # Launch & Deployment Phase (s in [0.0, 0.14])
     in_launch = s <= 0.14
     u_launch = min(1.0, max(0.0, s / 0.14))
 
-    # Ascent path rising smoothly from Earth's day-lit LC-41 surface (r_earth_vis = 2.60 m) to orbital injection knot
-    surface_anchor = earth_np + earth_rad * (PLANET_BY_NAME["Earth"].visual_radius_m + 0.12)
-    v1_orb_knot = VOYAGER1_KNOTS[0].pos_sim
-    v2_orb_knot = VOYAGER2_KNOTS[0].pos_sim
+    # Ascent path rising smoothly off Earth's sunlit prograde limb (R_earth = 14.0 m -> 28.0 m diameter!)
+    earth_r_vis = PLANET_BY_NAME["Earth"].visual_radius_m
+    surface_anchor = earth_np + limb_dir * (earth_r_vis + 0.48)
+    v1_orb_live = earth_np + limb_dir * (earth_r_vis * 1.34)
+    v2_orb_live = earth_np + limb_dir * (earth_r_vis * 1.36) + np.array([0.0, 1.1, 0.9], dtype=np.float64)
 
-    # Rocket visual scale: 0.075 (48m rocket -> ~3.6m cinematic vehicle rising off 5.2m diameter Earth!)
-    rocket_scale = 0.075
+    # Sleek aerospace rocket scale (0.032 -> 1.56 m tall vehicle against 28.0 m diameter sunlit Earth!)
+    rocket_scale = ROCKET_VISUAL_SCALE
 
     if in_launch:
         smooth_u = u_launch * u_launch * (3.0 - 2.0 * u_launch)
-        ascent_dir = (1.0 - 0.68 * smooth_u) * earth_rad + (0.68 * smooth_u) * earth_tan
+        ascent_dir = (1.0 - 0.55 * smooth_u) * limb_dir + (0.55 * smooth_u) * earth_tan
         ascent_dir /= max(np.linalg.norm(ascent_dir), 1e-6)
 
-        target_orb = v1_orb_knot if active_spacecraft == 1 else v2_orb_knot
+        target_orb = v1_orb_live if active_spacecraft == 1 else v2_orb_live
         rocket_pos_np = (1.0 - smooth_u) * surface_anchor + smooth_u * target_orb
         rocket_quat = quat_look_along_plus_z(ascent_dir, up_hint=np.array([0.0, 0.0, 1.0]))
 
@@ -477,8 +606,8 @@ def evaluate_simulation_frame(scrub_s: float, active_spacecraft: int = 1) -> Sim
         sep_u = max(0.0, min(1.0, (u_launch - 0.74) / 0.26))
         boom_01 = sep_u * sep_u * (3.0 - 2.0 * sep_u)
 
-        # Position Voyager inside Centaur shroud (z_local = 38.5 * rocket_scale) before separation, then pulling ahead
-        lead_dist = (38.5 * rocket_scale) + sep_u * 6.5
+        # Position Voyager inside Centaur shroud (z_local = 38.5 * rocket_scale = 1.23m) before separation, then pulling ahead
+        lead_dist = (38.5 * rocket_scale) + sep_u * 1.45
         sc_active_pos = rocket_pos_np + ascent_dir * lead_dist
 
         # Attitude: transitions smoothly from ascent_dir to Earth-pointing (+Z -> Earth) during deployment!
@@ -526,8 +655,8 @@ def evaluate_simulation_frame(scrub_s: float, active_spacecraft: int = 1) -> Sim
                 p_dir = point_dir
                 v_dir = ascent_dir
             else:
-                # Sister spacecraft parked on orbital departure slot
-                pos_np = v1_orb_knot if sc_id == 1 else v2_orb_knot
+                # Sister spacecraft parked on co-moving Earth orbital departure slot
+                pos_np = v1_orb_live if sc_id == 1 else v2_orb_live
                 v_dir = earth_tan
                 p_dir = (earth_np - pos_np) / max(np.linalg.norm(earth_np - pos_np), 1e-6)
             r_au = 1.0001 + 0.0015 * u_launch
@@ -535,6 +664,13 @@ def evaluate_simulation_frame(scrub_s: float, active_spacecraft: int = 1) -> Sim
             earth_dist_au = 0.00004 + 0.0018 * u_launch
         else:
             pos_np, v_dir, r_au, vel_kms = _catmull_rom_eval(knots, year)
+            # Patched-conic Earth SOI hyperbola blend (1977.685 -> 1977.90) so moving Earth never overtakes departure knot
+            if year < 1977.90:
+                u_soi = max(0.0, min(1.0, (year - 1977.685) / (1977.90 - 1977.685)))
+                w_soi = u_soi * u_soi * (3.0 - 2.0 * u_soi)
+                orb_base = v1_orb_live if sc_id == 1 else v2_orb_live
+                escape_hyp = orb_base + limb_dir * (earth_r_vis * 3.2 * u_soi) + earth_tan * (26.0 * u_soi)
+                pos_np = (1.0 - w_soi) * escape_hyp + w_soi * pos_np
             to_e = earth_np - pos_np
             p_dir = to_e / max(np.linalg.norm(to_e), 1e-6)
             # True AU vector distance to Earth
@@ -547,6 +683,7 @@ def evaluate_simulation_frame(scrub_s: float, active_spacecraft: int = 1) -> Sim
         to_earth_unit = (earth_np - pos_np) / max(np.linalg.norm(earth_np - pos_np), 1e-6)
         align_dot = float(np.clip(np.dot(p_dir, to_earth_unit), -1.0, 1.0))
         regime_str, regime_col = _classify_plasma_regime(r_au, pos_np)
+        loc_str = _describe_space_location(r_au, year, sc_id, s, pos_np, planet_pos)
 
         return SpacecraftState(
             pos_sim=(float(pos_np[0]), float(pos_np[1]), float(pos_np[2])),
@@ -561,6 +698,7 @@ def evaluate_simulation_frame(scrub_s: float, active_spacecraft: int = 1) -> Sim
             round_trip_light_time_str=_format_rtlt(earth_dist_au),
             plasma_regime=regime_str,
             plasma_color_hex=regime_col,
+            location_label=loc_str,
         )
 
     v1_state = _build_sc_state(1)

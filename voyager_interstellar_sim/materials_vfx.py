@@ -77,6 +77,52 @@ def ensure_vfx_textures() -> Dict[str, str]:
         Image.fromarray((op_rgb * 255.0).astype(np.uint8)).save(str(cor_op_path), format="PNG")
     out["corona_opacity"] = cor_op_path.as_posix()
 
+    # 3. Earth Specular Ocean / Matte Continent Roughness Map (derived from earth.png)
+    earth_src = TEXTURES_DIR / "earth.png"
+    earth_rough_path = TEXTURES_DIR / "earth_roughness.png"
+    if earth_src.exists():
+        if not earth_rough_path.exists():
+            arr = np.asarray(Image.open(str(earth_src)).convert("RGB"), dtype=np.float32) / 255.0
+            r_ch, g_ch, b_ch = arr[..., 0], arr[..., 1], arr[..., 2]
+            # Ocean mask: blue-dominant, low red; Polar ice: high brightness across all channels
+            is_ocean = (b_ch > r_ch * 1.18) & (b_ch > g_ch * 0.96) & (r_ch < 0.42)
+            is_ice = (r_ch > 0.78) & (g_ch > 0.80) & (b_ch > 0.80)
+            rough = np.where(is_ocean, 0.15, np.where(is_ice, 0.36, 0.82)).astype(np.float32)
+            r_rgb = (np.stack([rough, rough, rough], axis=-1) * 255.0).astype(np.uint8)
+            Image.fromarray(r_rgb).save(str(earth_rough_path), format="PNG")
+        out["earth_roughness"] = earth_rough_path.as_posix()
+
+    # 4. Tangent-space RGB Normal Maps from height/albedo maps (prevents grayscale normal skew!)
+    def _height_to_normal_png(src_png: Path, dst_png: Path, strength: float = 3.2) -> Optional[str]:
+        if not src_png.exists():
+            return None
+        if not dst_png.exists():
+            h_img = Image.open(str(src_png)).convert("L")
+            if h_img.width > 1024:
+                h_img = h_img.resize((1024, 512), Image.Resampling.BILINEAR)
+            h = np.asarray(h_img, dtype=np.float32) / 255.0
+            dx = (np.roll(h, -1, axis=1) - np.roll(h, 1, axis=1)) * strength
+            dy = (np.roll(h, -1, axis=0) - np.roll(h, 1, axis=0)) * strength
+            nx = -dx
+            ny = dy
+            nz = np.ones_like(h)
+            inv_len = 1.0 / np.sqrt(nx * nx + ny * ny + nz * nz + 1e-8)
+            n_rgb = np.stack(
+                [0.5 + 0.5 * nx * inv_len, 0.5 + 0.5 * ny * inv_len, 0.5 + 0.5 * nz * inv_len],
+                axis=-1,
+            )
+            Image.fromarray(np.clip(n_rgb * 255.0, 0, 255).astype(np.uint8)).save(str(dst_png), format="PNG")
+        return dst_png.as_posix()
+
+    for key_out, src_name, st in (
+        ("earth_normal", "earth_bump.png", 3.6),
+        ("mercury_normal", "mercury.png", 2.8),
+        ("mars_normal", "mars.png", 2.6),
+    ):
+        res_p = _height_to_normal_png(TEXTURES_DIR / src_name, TEXTURES_DIR / f"{key_out}.png", strength=st)
+        if res_p:
+            out[key_out] = res_p
+
     return out
 
 
@@ -86,7 +132,10 @@ def create_omnipbr_material(
     diffuse_color: Tuple[float, float, float] = (0.8, 0.8, 0.8),
     diffuse_texture: Optional[str] = None,
     bump_texture: Optional[str] = None,
+    bump_factor: float = 0.65,
     roughness: float = 0.55,
+    roughness_texture: Optional[str] = None,
+    specular_level: float = 0.5,
     metallic: float = 0.0,
     emissive_color: Optional[Tuple[float, float, float]] = None,
     emissive_texture: Optional[str] = None,
@@ -107,13 +156,18 @@ def create_omnipbr_material(
 
     shader.CreateInput("diffuse_color_constant", Sdf.ValueTypeNames.Color3f).Set(Gf.Vec3f(*diffuse_color))
     shader.CreateInput("reflection_roughness_constant", Sdf.ValueTypeNames.Float).Set(float(roughness))
+    shader.CreateInput("specular_level", Sdf.ValueTypeNames.Float).Set(float(specular_level))
     shader.CreateInput("metallic_constant", Sdf.ValueTypeNames.Float).Set(float(metallic))
 
     if diffuse_texture:
         shader.CreateInput("diffuse_texture", Sdf.ValueTypeNames.Asset).Set(Sdf.AssetPath(diffuse_texture))
 
+    if roughness_texture:
+        shader.CreateInput("reflection_roughness_texture_influence", Sdf.ValueTypeNames.Float).Set(1.0)
+        shader.CreateInput("reflectionroughness_texture", Sdf.ValueTypeNames.Asset).Set(Sdf.AssetPath(roughness_texture))
+
     if bump_texture:
-        shader.CreateInput("bump_factor", Sdf.ValueTypeNames.Float).Set(0.65)
+        shader.CreateInput("bump_factor", Sdf.ValueTypeNames.Float).Set(float(bump_factor))
         shader.CreateInput("normalmap_texture", Sdf.ValueTypeNames.Asset).Set(Sdf.AssetPath(bump_texture))
 
     if emissive_intensity > 0.0 and (emissive_color is not None or emissive_texture is not None):
@@ -338,7 +392,8 @@ def define_heliosphere_teardrop_shell(
             c_cnts.append(n_polar + 1)
         curves.CreatePointsAttr(Vt.Vec3fArray(c_pts))
         curves.CreateCurveVertexCountsAttr(Vt.IntArray(c_cnts))
-        curves.CreateWidthsAttr(Vt.FloatArray([0.65] * len(c_pts)))
+        curves.CreateWidthsAttr(Vt.FloatArray([0.16] * len(c_pts)))
         curves.CreateDisplayColorAttr(Vt.Vec3fArray([Gf.Vec3f(*wire_color)]))
+        curves.CreateDisplayOpacityAttr(Vt.FloatArray([0.18]))
 
     return mesh

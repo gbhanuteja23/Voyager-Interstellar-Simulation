@@ -1,0 +1,23 @@
+# Normalize line endings across Windows & Linux/WSL2
+* text=auto eol=lf
+
+# Windows batch scripts require CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Python, Markdown, JSON, and ASCII OpenUSD use LF
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.txt text eol=lf
+*.usda text eol=lf
+*.usd text eol=lf
+
+# Binary 3D & image assets
+*.glb binary
+*.usdc binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.hdr binary
+*.exr binary

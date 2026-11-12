@@ -1,0 +1,14 @@
+# ==============================================================================
+# Voyager 1 & 2 Interstellar Journey Simulation — Python Dependencies
+# ==============================================================================
+# NOTE: Run this project using NVIDIA Isaac Sim's bundled Python interpreter:
+#   Windows: D:\0-NVIDIA-Omniverse\isaac-sim\python.bat
+#   Linux:   $ISAAC_PATH/python.sh
+#
+# All core simulation, OpenUSD (`pxr`), Omniverse UI (`omni.ui`), Asset Converter
+# (`omni.kit.asset_converter`), and math/image packages below are pre-installed
+# inside NVIDIA Isaac Sim 5.x (Python 3.11).
+#
+# Listed below for IDE autocomplete / standalone asset utility reference:
+numpy>=1.26.0
+Pillow>=10.0.0

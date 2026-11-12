@@ -102,19 +102,19 @@ Stage metadata: `upAxis = "Z"`, `metersPerUnit = 1.0`.
 
 ## 5. Piecewise Logarithmic Radial Distance & Apparent Scale Math
 
-To span $10^{-4}\text{ AU}$ (Earth ascent) to $25,000\text{ AU}$ (Oort Cloud) inside single-precision `float32` coordinates without camera jitter while preserving true heliocentric telemetry on the `omni.ui` HUD, true heliocentric distance $r = \|\mathbf{x}_{\text{AU}}\|$ maps monotonically to simulation radius $R_{\text{sim}}(r)$ (in meters):
+To span $10^{-4}\text{ AU}$ (Earth ascent) to $25,000\text{ AU}$ (Oort Cloud) inside single-precision `float32` coordinates without camera jitter while preserving true heliocentric telemetry on both the `omni.ui` Mission Control window and the in-viewport `VoyagerViewportHUD`, true heliocentric distance $r = \|\mathbf{x}_{\text{AU}}\|$ maps monotonically to simulation radius $R_{\text{sim}}(r)$ (in meters):
 
 1. **Regime I — Inner Solar System ($0 \le r \le 2.0\text{ AU}$):**
-   $$R_{\text{sim}}(r) = R_0 \frac{\ln(1 + \alpha_1 r)}{\ln(1 + \alpha_1)}, \quad R_0 = 75.0\text{ m},\; \alpha_1 = 2.5$$
-   - Sun center: $0\text{ m}$ (photosphere $14.0\text{ m}$, outer corona $24.0\text{ m}$); Mercury ($0.39\text{ AU}$): $40.6\text{ m}$; Earth ($1.0\text{ AU}$): $75.0\text{ m}$; Mars ($1.52\text{ AU}$): $93.7\text{ m}$; $R_1 = R_{\text{sim}}(2.0) = 107.22\text{ m}$.
+   $$R_{\text{sim}}(r) = R_0 \frac{\ln(1 + \alpha_1 r)}{\ln(1 + \alpha_1)}, \quad R_0 = 240.0\text{ m},\; \alpha_1 = 2.2$$
+   - Sun center: $0\text{ m}$ (photosphere $34.0\text{ m}$, outer corona $54.0\text{ m}$); Mercury ($0.39\text{ AU}$): $127.3\text{ m}$; Earth ($1.0\text{ AU}$): $240.0\text{ m}$; Mars ($1.52\text{ AU}$): $303.6\text{ m}$; $R_1 = R_{\text{sim}}(2.0) = 349.49\text{ m}$.
 2. **Regime II — Asteroid Belt, Gas/Ice Giants & Kuiper Belt ($2.0 < r \le 55.0\text{ AU}$):**
-   $$R_{\text{sim}}(r) = R_1 + S_2 \ln\!\left(\frac{r}{2.0}\right), \quad S_2 = 115.0\text{ m}$$
-   - Main Belt ($2.2\text{–}3.3\text{ AU}$): $118\text{–}165\text{ m}$; Jupiter ($5.20\text{ AU}$): $217.2\text{ m}$; Saturn ($9.58\text{ AU}$): $287.4\text{ m}$; Uranus ($19.22\text{ AU}$): $367.4\text{ m}$; Neptune ($30.11\text{ AU}$): $419.0\text{ m}$; Kuiper Belt ($33\text{–}52\text{ AU}$): $430\text{–}482\text{ m}$; $R_2 = R_{\text{sim}}(55.0) = 488.32\text{ m}$.
+   $$R_{\text{sim}}(r) = R_1 + S_2 \ln\!\left(\frac{r}{2.0}\right), \quad S_2 = 330.0\text{ m}$$
+   - Main Belt ($2.15\text{–}3.3\text{ AU}$): $373\text{–}515\text{ m}$; Jupiter ($5.20\text{ AU}$): $664.9\text{ m}$; Saturn ($9.58\text{ AU}$): $866.4\text{ m}$; Uranus ($19.22\text{ AU}$): $1,096.0\text{ m}$; Neptune ($30.11\text{ AU}$): $1,244.0\text{ m}$; Kuiper Belt ($32.5\text{–}51.5\text{ AU}$): $1,269\text{–}1,421\text{ m}$; $R_2 = R_{\text{sim}}(55.0) = 1,442.99\text{ m}$.
 3. **Regime III — Heliosheath, Termination Shock, Heliopause & VLISM ($55.0 < r \le 250.0\text{ AU}$):**
-   $$R_{\text{sim}}(r) = R_2 + S_3 \ln\!\left(\frac{r}{55.0}\right), \quad S_3 = 210.0\text{ m}$$
-   - Termination Shock ($84\text{–}94\text{ AU}$): $577\text{–}601\text{ m}$; Heliopause ($119\text{–}122\text{ AU}$): $650\text{–}655\text{ m}$; Voyager 2 (2026, $139.5\text{ AU}$): $684\text{ m}$; Voyager 1 (2026, $166.4\text{ AU}$): $721\text{ m}$; $R_3 = R_{\text{sim}}(250.0) = 806.38\text{ m}$.
+   $$R_{\text{sim}}(r) = R_2 + S_3 \ln\!\left(\frac{r}{55.0}\right), \quad S_3 = 520.0\text{ m}$$
+   - Termination Shock ($84\text{–}94\text{ AU}$): $1,663\text{–}1,722\text{ m}$; Heliopause ($119\text{–}122\text{ AU}$): $1,844\text{–}1,857\text{ m}$; Voyager 2 (2026, $139.5\text{ AU}$): $1,927\text{ m}$; Voyager 1 (2026, $166.4\text{ AU}$): $2,019\text{ m}$; $R_3 = R_{\text{sim}}(250.0) = 2,230.35\text{ m}$.
 4. **Regime IV — Oort Cloud & Deep Interstellar Space ($r > 250.0\text{ AU}$):**
-   $$R_{\text{sim}}(r) = R_3 + S_4 \ln\!\left(\frac{r}{250.0}\right), \quad S_4 = 110.0\text{ m}$$
-   - Oort Cloud ($1,000\text{–}25,000\text{ AU}$): $959\text{–}1,313\text{ m}$. Maximum stage extent stays within $1,350\text{ m}$ (`float32` precision $< 0.15\text{ mm}$).
+   $$R_{\text{sim}}(r) = R_3 + S_4 \ln\!\left(\frac{r}{250.0}\right), \quad S_4 = 270.0\text{ m}$$
+   - Oort Cloud ($1,050\text{–}24,000\text{ AU}$): $2,618\text{–}3,463\text{ m}$. Maximum stage extent stays within $\sim 3,600\text{ m}$ (`float32` precision $< 0.3\text{ mm}$).
 
-**Apparent Visual Radii:** Compressed via $a_{\text{vis}} = 2.60\text{ m} \cdot (R_{\text{body}} / R_{\oplus})^{0.42}$ (clamped so moons/rings never intersect parent orbits), while Voyager 1 & 2 maintain true 1:1 physical geometry ($3.7\text{ m}$ dish) in Chase/Staging views with an adaptive distant telemetry beacon for Solar-System-wide camera modes.
+**Grand Planetary-to-Spacecraft Proportions & Translucent Curves:** Planets are rendered as towering physically-lit `OmniPBR` globes (`Earth = 14 m` radius / `28 m` diameter, `Jupiter = 36 m` radius / `72 m` diameter, `Saturn + Rings = 140 m` span) with specular ocean roughness maps, tangent-space RGB normal maps, and Rayleigh atmospheric halos, while Voyager 1 & 2 (`SPACECRAFT_VISUAL_SCALE = 0.12`, `0.42 m` dish — `92.7x` Earth-to-dish world bound ratio) and the Titan IIIE / Centaur launch vehicle (`ROCKET_VISUAL_SCALE = 0.032`, `1.56 m`) appear realistically scaled against massive planetary horizons. Trajectory, radio-link, and orbit `BasisCurves` use razor-thin camera-adaptive widths (`0.010 m` / `0.004 m` in close views, `0.28 m` / `0.12 m` in wide overviews) bound to translucent emissive `OmniPBR_Opacity` materials so spacecraft hardware is never occluded.
