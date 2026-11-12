@@ -1,0 +1,59 @@
+{
+  "local_scan": {
+    "isaac_sim_root": "D:/0-NVIDIA-Omniverse/isaac-sim",
+    "simready_central_dir": "D:/0-NVIDIA-Omniverse/1-Isaac-sim-assets/simready-assets-hf/simready-central",
+    "simready_central_exists": true,
+    "simready_local_usd_count": 1,
+    "simready_local_usd_files": [
+      "D:\\0-NVIDIA-Omniverse\\1-Isaac-sim-assets\\simready-assets-hf\\simready-central\\services\\explorer\\dist\\static\\usd-warm\\90a9ee58ac77\\asset.usdc"
+    ],
+    "simready_note": "Indexed local SimReady USD/MDL files.",
+    "kit_mdl_shaders": {
+      "baking_annotations": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/baking_annotations.mdl",
+      "OmniEmissive": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniEmissive.mdl",
+      "OmniGlass": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniGlass.mdl",
+      "OmniGlass_Opacity": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniGlass_Opacity.mdl",
+      "OmniHair": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniHair.mdl",
+      "OmniHairPresets": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniHairPresets.mdl",
+      "OmniPBR": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR.mdl",
+      "OmniPBR_ClearCoat": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR_ClearCoat.mdl",
+      "OmniPBR_ClearCoat_Opacity": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR_ClearCoat_Opacity.mdl",
+      "OmniPBR_Opacity": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR_Opacity.mdl",
+      "OmniPBRBase": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBRBase.mdl",
+      "OmniSurface": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniSurface.mdl",
+      "OmniSurfaceBlend": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniSurfaceBlend.mdl",
+      "OmniSurfaceLite": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniSurfaceLite.mdl",
+      "OmniSurfacePresets": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniSurfacePresets.mdl",
+      "SimPBR": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/SimPBR.mdl",
+      "SimPBR_Model": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/SimPBR_Model.mdl",
+      "SimPBR_Translucent": "D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/SimPBR_Translucent.mdl"
+    }
+  },
+  "raw_downloads": {
+    "voyager": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_raw/nasa_voyager.glb"
+  },
+  "converted_nasa_voyager_usd": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/voyager_nasa_converted.usd",
+  "converted_nasa_rocket_usd": null,
+  "voyager_articulated_usd": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/voyager_articulated.usd",
+  "titan_iiie_centaur_usd": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/titan_iiie_centaur.usd",
+  "asteroid_prototypes_usd": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd",
+  "textures": {
+    "earth": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/earth.png",
+    "earth_bump": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/earth_bump.png",
+    "earth_clouds": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/earth_clouds.png",
+    "mercury": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/mercury.png",
+    "jupiter": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/jupiter.png",
+    "mars": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/mars.png",
+    "sun": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/sun.png",
+    "venus": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/venus.png",
+    "saturn": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/saturn.png",
+    "saturn_rings": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/saturn_rings.png",
+    "saturn_rings_opacity": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/saturn_rings_opacity.png",
+    "uranus": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/uranus.png",
+    "neptune": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/neptune.png",
+    "titan": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/titan.png",
+    "asteroid_rock": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/asteroid_rock.png",
+    "kuiper_ice": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/kuiper_ice.png",
+    "milky_way": "D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/milky_way_starfield.png"
+  }
+}
