@@ -11,9 +11,9 @@
 *.json text eol=lf
 *.txt text eol=lf
 *.usda text eol=lf
-*.usd text eol=lf
 
 # Binary 3D & image assets
+*.usd binary
 *.glb binary
 *.usdc binary
 *.png binary

@@ -27,24 +27,19 @@ def "Render" (
             )
             {
                 rel camera = </OmniverseKit_Persp>
-                token omni:rtx:background:source:texture:textureMode = "repeatMirrored"
-                token omni:rtx:background:source:type = "domeLight"
                 bool omni:rtx:dlss:frameGeneration = 0
                 bool omni:rtx:material:db:nonVisualMaterialCSV:enabled = 0
                 bool omni:rtx:material:db:syncLoads = 1
+                token omni:rtx:post:aa:op = "dlss"
                 token omni:rtx:post:dlss:execMode = "performance"
-                bool omni:rtx:post:registeredCompositing:invertColorCorrection = 1
-                bool omni:rtx:post:registeredCompositing:invertToneMap = 1
                 int omni:rtx:pt:clampSpp = 64
-                bool omni:rtx:pt:lightcache:cached:dontResolveConflicts = 1
-                int omni:rtx:pt:maxSamplesPerLaunch = 2073600
+                int omni:rtx:pt:limits:maxBounces = 4
+                int omni:rtx:pt:limits:maxGlossyBounces = 6
                 int omni:rtx:pt:maxVolumeBounces = 4
-                int omni:rtx:pt:mgpu:maxPixelsPerRegionExponent = 12
                 int omni:rtx:pt:samplesPerIteration = 64
                 int omni:rtx:pt:samplesPerPixel = 64
                 color3f omni:rtx:rt:ambientLight:color = (0.1, 0.1, 0.1)
                 bool omni:rtx:rt:demoire = 0
-                bool omni:rtx:rt:lightcache:spatialCache:dontResolveConflicts = 1
                 bool omni:rtx:scene:hydra:materialSyncLoads = 1
                 bool omni:rtx:scene:hydra:mdlMaterialWarmup = 1
                 int omni:rtx:scene:hydra:subdivision:refinementLevel = 0
@@ -93,9 +88,9 @@ def Xform "World"
                 uniform asset info:mdl:sourceAsset = @D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR.mdl@
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
                 color3f inputs:diffuse_color_constant = (1, 0.95, 0.8)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/sun.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/sun.png@
                 color3f inputs:emissive_color = (1, 0.88, 0.56)
-                asset inputs:emissive_color_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/sun.png@
+                asset inputs:emissive_color_texture = @voyager_interstellar_sim/assets_usd/textures/sun.png@
                 float inputs:emissive_intensity = 28000
                 bool inputs:enable_emission = 1
                 float inputs:metallic_constant = 0
@@ -243,7 +238,7 @@ def Xform "World"
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
                 float inputs:bump_factor = 0.72
                 color3f inputs:diffuse_color_constant = (0.62, 0.59, 0.56)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/mercury.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/mercury.png@
                 float inputs:metallic_constant = 0.02
                 asset inputs:normalmap_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/mercury_normal.png@
                 float inputs:reflection_roughness_constant = 0.78
@@ -310,7 +305,7 @@ def Xform "World"
                 uniform asset info:mdl:sourceAsset = @D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR.mdl@
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
                 color3f inputs:diffuse_color_constant = (0.94, 0.82, 0.6)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/venus.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/venus.png@
                 float inputs:metallic_constant = 0.02
                 float inputs:reflection_roughness_constant = 0.42
                 float inputs:specular_level = 0.65
@@ -409,7 +404,7 @@ def Xform "World"
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
                 float inputs:bump_factor = 0.85
                 color3f inputs:diffuse_color_constant = (0.25, 0.52, 0.88)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/earth.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/earth.png@
                 float inputs:metallic_constant = 0.02
                 asset inputs:normalmap_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/earth_normal.png@
                 float inputs:reflection_roughness_constant = 0.24
@@ -474,13 +469,13 @@ def Xform "World"
                 uniform asset info:mdl:sourceAsset = @D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR_Opacity.mdl@
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR_Opacity"
                 color3f inputs:diffuse_color_constant = (0.98, 0.99, 1)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/earth_clouds.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/earth_clouds.png@
                 bool inputs:enable_opacity = 1
                 bool inputs:enable_opacity_texture = 1
                 float inputs:metallic_constant = 0
                 float inputs:opacity_constant = 0.78
                 int inputs:opacity_mode = 1
-                asset inputs:opacity_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/earth_clouds.png@
+                asset inputs:opacity_texture = @voyager_interstellar_sim/assets_usd/textures/earth_clouds.png@
                 float inputs:reflection_roughness_constant = 0.68
                 float inputs:specular_level = 0.45
                 token outputs:out
@@ -547,7 +542,7 @@ def Xform "World"
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
                 float inputs:bump_factor = 0.72
                 color3f inputs:diffuse_color_constant = (0.84, 0.4, 0.23)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/mars.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/mars.png@
                 float inputs:metallic_constant = 0.02
                 asset inputs:normalmap_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/mars_normal.png@
                 float inputs:reflection_roughness_constant = 0.72
@@ -646,7 +641,7 @@ def Xform "World"
                 uniform asset info:mdl:sourceAsset = @D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR.mdl@
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
                 color3f inputs:diffuse_color_constant = (0.9, 0.78, 0.62)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/jupiter.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/jupiter.png@
                 float inputs:metallic_constant = 0.02
                 float inputs:reflection_roughness_constant = 0.36
                 float inputs:specular_level = 0.68
@@ -744,7 +739,7 @@ def Xform "World"
                 uniform asset info:mdl:sourceAsset = @D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR.mdl@
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
                 color3f inputs:diffuse_color_constant = (0.94, 0.84, 0.64)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/saturn.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/saturn.png@
                 float inputs:metallic_constant = 0.02
                 float inputs:reflection_roughness_constant = 0.38
                 float inputs:specular_level = 0.65
@@ -806,13 +801,13 @@ def Xform "World"
                 uniform asset info:mdl:sourceAsset = @D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR_Opacity.mdl@
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR_Opacity"
                 color3f inputs:diffuse_color_constant = (0.94, 0.86, 0.7)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/saturn_rings.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/saturn_rings.png@
                 bool inputs:enable_opacity = 1
                 bool inputs:enable_opacity_texture = 1
                 float inputs:metallic_constant = 0
                 float inputs:opacity_constant = 0.92
                 int inputs:opacity_mode = 1
-                asset inputs:opacity_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/saturn_rings_opacity.png@
+                asset inputs:opacity_texture = @voyager_interstellar_sim/assets_usd/textures/saturn_rings_opacity.png@
                 float inputs:reflection_roughness_constant = 0.34
                 float inputs:specular_level = 0.78
                 token outputs:out
@@ -842,7 +837,7 @@ def Xform "World"
                 uniform asset info:mdl:sourceAsset = @D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR.mdl@
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
                 color3f inputs:diffuse_color_constant = (0.9, 0.64, 0.3)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/titan.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/titan.png@
                 float inputs:metallic_constant = 0
                 float inputs:reflection_roughness_constant = 0.52
                 float inputs:specular_level = 0.48
@@ -908,7 +903,7 @@ def Xform "World"
                 uniform asset info:mdl:sourceAsset = @D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR.mdl@
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
                 color3f inputs:diffuse_color_constant = (0.62, 0.88, 0.92)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/uranus.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/uranus.png@
                 float inputs:metallic_constant = 0.02
                 float inputs:reflection_roughness_constant = 0.34
                 float inputs:specular_level = 0.72
@@ -1006,7 +1001,7 @@ def Xform "World"
                 uniform asset info:mdl:sourceAsset = @D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR.mdl@
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
                 color3f inputs:diffuse_color_constant = (0.26, 0.48, 0.95)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/neptune.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/neptune.png@
                 float inputs:metallic_constant = 0.02
                 float inputs:reflection_roughness_constant = 0.32
                 float inputs:specular_level = 0.78
@@ -1068,7 +1063,7 @@ def Xform "World"
                 uniform asset info:mdl:sourceAsset = @D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR.mdl@
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
                 color3f inputs:diffuse_color_constant = (0.55, 0.5, 0.44)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/asteroid_rock.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/asteroid_rock.png@
                 color3f inputs:emissive_color = (0.45, 0.4, 0.35)
                 float inputs:emissive_intensity = 28
                 bool inputs:enable_emission = 1
@@ -1102,7 +1097,7 @@ def Xform "World"
                 uniform asset info:mdl:sourceAsset = @D:/0-NVIDIA-Omniverse/isaac-sim/kit/mdl/core/Base/OmniPBR.mdl@
                 uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
                 color3f inputs:diffuse_color_constant = (0.68, 0.8, 0.92)
-                asset inputs:diffuse_texture = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/kuiper_ice.png@
+                asset inputs:diffuse_texture = @voyager_interstellar_sim/assets_usd/textures/kuiper_ice.png@
                 color3f inputs:emissive_color = (0.55, 0.72, 0.9)
                 float inputs:emissive_intensity = 35
                 bool inputs:enable_emission = 1
@@ -1570,7 +1565,7 @@ def Xform "World"
         def DomeLight "MilkyWayDomeLight"
         {
             float inputs:intensity = 85
-            asset inputs:texture:file = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/textures/milky_way_starfield.png@
+            asset inputs:texture:file = @voyager_interstellar_sim/assets_usd/textures/milky_way_starfield.png@
             token inputs:texture:format = "latlong"
         }
 
@@ -2280,7 +2275,7 @@ def Xform "World"
                 {
                     def Xform "Proto_0" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_Silicate_0>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_Silicate_0>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_AsteroidSilicate>
@@ -2288,7 +2283,7 @@ def Xform "World"
 
                     def Xform "Proto_1" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_Silicate_1>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_Silicate_1>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_AsteroidSilicate>
@@ -2296,7 +2291,7 @@ def Xform "World"
 
                     def Xform "Proto_2" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_Carbonaceous_2>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_Carbonaceous_2>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_AsteroidSilicate>
@@ -2304,7 +2299,7 @@ def Xform "World"
 
                     def Xform "Proto_3" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_Silicate_0>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_Silicate_0>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_AsteroidSilicate>
@@ -2312,7 +2307,7 @@ def Xform "World"
 
                     def Xform "Proto_4" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_KuiperTholin_4>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_KuiperTholin_4>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_AsteroidSilicate>
@@ -2344,7 +2339,7 @@ def Xform "World"
                 {
                     def Xform "Proto_0" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_KuiperIce_3>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_KuiperIce_3>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_KuiperOortIce>
@@ -2352,7 +2347,7 @@ def Xform "World"
 
                     def Xform "Proto_1" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_KuiperTholin_4>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_KuiperTholin_4>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_KuiperOortIce>
@@ -2360,7 +2355,7 @@ def Xform "World"
 
                     def Xform "Proto_2" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_OortComet_5>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_OortComet_5>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_KuiperOortIce>
@@ -2368,7 +2363,7 @@ def Xform "World"
 
                     def Xform "Proto_3" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_Carbonaceous_2>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_Carbonaceous_2>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_KuiperOortIce>
@@ -2376,7 +2371,7 @@ def Xform "World"
 
                     def Xform "Proto_4" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_KuiperIce_3>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_KuiperIce_3>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_KuiperOortIce>
@@ -2411,7 +2406,7 @@ def Xform "World"
                 {
                     def Xform "Proto_0" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_OortComet_5>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_OortComet_5>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_KuiperOortIce>
@@ -2419,7 +2414,7 @@ def Xform "World"
 
                     def Xform "Proto_1" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_KuiperIce_3>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_KuiperIce_3>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_KuiperOortIce>
@@ -2427,7 +2422,7 @@ def Xform "World"
 
                     def Xform "Proto_2" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_KuiperTholin_4>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_KuiperTholin_4>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_KuiperOortIce>
@@ -2435,7 +2430,7 @@ def Xform "World"
 
                     def Xform "Proto_3" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_Silicate_1>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_Silicate_1>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_KuiperOortIce>
@@ -2443,7 +2438,7 @@ def Xform "World"
 
                     def Xform "Proto_4" (
                         prepend apiSchemas = ["MaterialBindingAPI"]
-                        prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_OortComet_5>
+                        prepend references = @voyager_interstellar_sim/assets_usd/asteroid_prototypes.usd@</AsteroidPrototypes/Proto_OortComet_5>
                     )
                     {
                         rel material:binding = </World/Materials/Mat_KuiperOortIce>
@@ -2696,7 +2691,7 @@ def Xform "World"
     def Xform "LaunchComplex"
     {
         def Xform "TitanIIIE_Centaur" (
-            prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/titan_iiie_centaur.usd@
+            prepend references = @voyager_interstellar_sim/assets_usd/titan_iiie_centaur.usd@
         )
         {
             quatd xformOp:orient:worldRot = (-0.13970656170063475, -0.08698773978194453, 0.5213541137397585, 0.8373201883581014)
@@ -3142,7 +3137,7 @@ def Xform "World"
         }
 
         def Xform "Voyager1" (
-            prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/voyager_articulated.usd@
+            prepend references = @voyager_interstellar_sim/assets_usd/voyager_articulated.usd@
         )
         {
             quatd xformOp:orient:worldRot = (-0.13970656170063475, -0.08698773978194453, 0.5213541137397585, 0.8373201883581014)
@@ -3177,7 +3172,7 @@ def Xform "World"
         }
 
         def Xform "Voyager2" (
-            prepend references = @D:/1-Projects/3-Voyager-Journey-Simulation/voyager_interstellar_sim/assets_usd/voyager_articulated.usd@
+            prepend references = @voyager_interstellar_sim/assets_usd/voyager_articulated.usd@
         )
         {
             quatd xformOp:orient:worldRot = (0.5098607729670394, 0.8432165814064175, 0.14579502906680517, 0.08815667036666686)
