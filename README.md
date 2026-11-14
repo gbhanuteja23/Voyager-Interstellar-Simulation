@@ -30,6 +30,45 @@ A complete, interactive, scientifically grounded 3D OpenUSD simulation built for
 
 ---
 
+## Live Viewport Showcase & Image Annotations
+
+### 1. Phase 1 — Titan IIIE / Centaur Earth Launch Ascent (`T = 1977.68`, `1.00 AU`)
+
+![Phase 1 Earth Launch Ascent in NVIDIA Isaac Sim](docs/images/phase1_earth_launch_ascent.jpg)
+
+* **Scene State (`scrub_s = 0.0`, `VoyagerChaseCam`, RTX Real-Time):** Captures **Voyager 1** stowed inside the **Titan IIIE / Centaur** payload fairing immediately after ignition off Earth's sunlit limb, with twin UA1205 Solid Rocket Boosters (SRBs), core stage, and thruster plume geometry visible against the towering Earth horizon.
+* **Spacecraft State & Curves:** `HGA EARTH ALIGN: 0.0% | BOOMS: 0%` (magnetometer Astromast, MHW-RTG boom, and science scan platform folded prior to Centaur separation), while the thin translucent `Voyager1_Trajectory` `BasisCurves` filament traces the outward interplanetary departure arc.
+* **Live HUD Telemetry:** `LOCATION: Earth Launch Ascent -- Titan IIIE SRB Climb` | `HELIOCENTRIC DIST: 1.00 AU (0.150 B km)` | `EARTH DIST: 0.00 AU` | `HELIOCENTRIC VEL: 7.80 km/s` | `ROUND-TRIP LIGHT: 00h 00m 00s` | `PLASMA REGIME: Earth Magnetosphere / LEO Ascent`.
+
+### 2. Deep Interstellar Cruise — Outer Oort Cloud Spherical Shell (`Year 4800.00`, `10,100.00 AU`)
+
+![Deep Interstellar Outer Oort Cloud Cruise in NVIDIA Isaac Sim](docs/images/phase5_outer_oort_cloud_interstellar.jpg)
+
+* **Scene State (`scrub_s = 1.0`, `VoyagerChaseCam`, RTX Real-Time):** Close chase view of **Voyager 1** in deep interstellar space inside the outer **Oort Cloud** cometary halo (`4800-01`), highlighting its fully deployed aerospace geometry — decagonal bus, 3.7 m parabolic High-Gain Antenna dish, 13 m Astromast magnetometer boom, 3-cylinder MHW-RTG arm, Science Scan Platform, and dual PRA whip antennas.
+* **Unobscured Translucent Sightline & 3D Callouts:** The razor-thin translucent amber `Voyager1_EarthRadioLink` curve (`0.004 m` close width) stretches cleanly from the High-Gain Dish boresight (`HGA EARTH ALIGN: 100.0% | BOOMS: 100%`) straight back toward the distant Solar System & Heliosphere glow. Floating 3D-projected viewport callouts simultaneously pinpoint `Earth (1.00 AU)`, `Jupiter Flyby | 5.1 AU`, `Saturn (9.58 AU)`, `Saturn & Titan | 9.3 AU`, `Uranus (19.22 AU)`, `Kuiper Belt | 39.4 AU`, and `[+] VOYAGER 1 | 10,100.00 AU`.
+* **Live HUD Telemetry:** Top `VoyagerViewportHUD` ribbon & Mission Control card read `SUN DISTANCE: 10,100.00 AU (1,510.94 B km)` | `EARTH DIST: 10,100.81 AU` | `VEL: 16.88 km/s` | `ROUND-TRIP LIGHT: 116.7 days` | `PLASMA REGIME: Oort Cloud Cometary Halo (Deep Interstellar)` with the logarithmic progress bar filled to `1.000000` (`Oort (10k AU)`).
+
+---
+
+## Script Reference & Documentation Index
+
+For a full function-by-function technical breakdown of every module in `voyager_interstellar_sim/`, see **[`docs/SCRIPT_REFERENCE.md`](docs/SCRIPT_REFERENCE.md)**:
+
+| # | Script | Layer | Responsibility | Detailed Reference |
+| :---: | :--- | :--- | :--- | :--- |
+| **1** | [`__init__.py`](voyager_interstellar_sim/__init__.py) | Package | Package initialization & `__version__` metadata | [Section 1 — `__init__.py`](docs/SCRIPT_REFERENCE.md#1-__init__py) |
+| **2** | [`config.py`](voyager_interstellar_sim/config.py) | Foundation | Astronomical constants, piecewise-log AU↔meter scaling, J2000 ephemerides & presets | [Section 2 — `config.py`](docs/SCRIPT_REFERENCE.md#2-configpy) |
+| **3** | [`fetch_and_convert_assets.py`](voyager_interstellar_sim/fetch_and_convert_assets.py) | Assets & USD | NASA 3D Resources downloader, Kit `.glb`→`.usd` converter, textures & articulated USDs | [Section 3 — `fetch_and_convert_assets.py`](docs/SCRIPT_REFERENCE.md#3-fetch_and_convert_assetspy) |
+| **4** | [`materials_vfx.py`](voyager_interstellar_sim/materials_vfx.py) | Shaders & Meshes | `OmniPBR` / `OmniPBR_Opacity` MDL builders, ocean roughness/RGB normal maps & teardrop shells | [Section 4 — `materials_vfx.py`](docs/SCRIPT_REFERENCE.md#4-materials_vfxpy) |
+| **5** | [`kinematics.py`](voyager_interstellar_sim/kinematics.py) | Astrodynamics | Keplerian solver, V1/V2 Catmull-Rom splines, launch staging & DSN telemetry | [Section 5 — `kinematics.py`](docs/SCRIPT_REFERENCE.md#5-kinematicspy) |
+| **6** | [`scene_builder.py`](voyager_interstellar_sim/scene_builder.py) | OpenUSD Scene | Full `/World` stage assembly, GPU `PointInstancer`s, adaptive `BasisCurves` & 5-camera rig | [Section 6 — `scene_builder.py`](docs/SCRIPT_REFERENCE.md#6-scene_builderpy) |
+| **7** | [`ui_mission_control.py`](voyager_interstellar_sim/ui_mission_control.py) | UI & Control | `MissionController`, `VoyagerViewportHUD` 3D callouts & Mission Control window | [Section 7 — `ui_mission_control.py`](docs/SCRIPT_REFERENCE.md#7-ui_mission_controlpy) |
+| **8** | [`main_voyager_sim.py`](voyager_interstellar_sim/main_voyager_sim.py) | Entry Point & QA | CLI launcher, Isaac Sim `SimulationApp` loop & `--headless --verify` test suite | [Section 8 — `main_voyager_sim.py`](docs/SCRIPT_REFERENCE.md#8-main_voyager_simpy) |
+
+*Additional architecture notes:* [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md)
+
+---
+
 ## Architecture & Repository Layout
 
 ```text
@@ -42,6 +81,11 @@ Voyager-Interstellar-Simulation/
 ├── .gitattributes                               # Cross-platform line-ending & binary asset rules
 ├── run_simulation.bat                           # One-click Windows interactive GUI launcher
 ├── verify_headless.bat                          # One-click Windows headless verification runner
+├── docs/
+│   ├── SCRIPT_REFERENCE.md                      # Detailed indexed documentation of every Python script
+│   └── images/
+│       ├── phase1_earth_launch_ascent.jpg       # Phase 1 Earth launch ascent viewport capture
+│       └── phase5_outer_oort_cloud_interstellar.jpg  # Outer Oort Cloud deep interstellar viewport capture
 └── voyager_interstellar_sim/
     ├── __init__.py
     ├── config.py                                # Ephemerides, constants, piecewise-log AU<->sim math
